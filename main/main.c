@@ -26,6 +26,31 @@
 #define OLED_ADDR 0x3C
 
 // ===========================================================
+// Config. Pinos
+
+int gpio_pin_config(){
+    if (gpioInitialise() < 0) {
+        fprintf(stderr, "  [OLED] Erro: GPIO não foi inicializado.\n");
+        return 1;
+    }
+
+    gpioSetMode(STEP_PIN, PI_OUTPUT);
+    gpioSetMode(DIR_PIN, PI_OUTPUT);
+    gpioSetMode(ENABLE_PIN, PI_OUTPUT);
+    gpioSetMode(RELAY_PIN, PI_OUTPUT);
+    gpioSetMode(CURSO_FINAL_PIN, PI_INPUT);
+    gpioSetPullUpDown(CURSO_FINAL_PIN, PI_PUD_UP);
+    gpioSetMode(BUTTON_PIN, PI_INPUT);
+    gpioSetPullUpDown(BUTTON_PIN, PI_PUD_UP);
+
+    gpioWrite(DIR_PIN, 0);       // Direção Padrão (subida)
+    gpioWrite(ENABLE_PIN, 0);    // Enable no Driver
+    gpioWrite(RELAY_PIN, 1);     // Relé inicialmente desligado
+    gpioSetPWMrange(STEP_PIN, 1000);
+    return 0;
+}
+
+// ===========================================================
 // Motor
 
 // Rotina de Referenciamento (Procurando: Fim de curso)
@@ -67,7 +92,7 @@ int rotina_descida() {
 }
 
 // Rotina de Subida (Subida durante duração)
-int ascending_routine() {
+int rotina_subida() {
     gpioWrite(DIR_PIN, 0);  // Subindo durante duração
     int pwm_exit = gpioHardwarePWM(STEP_PIN, FREQUENCIA_KHZ*1000, DUTY_CICLE);
     if (pwm_exit < 0) {
@@ -101,7 +126,10 @@ int main() {
         }
 
         // Procura Fim de Curso
-        rotina_referenciamento();
+        // rotina_referenciamento();
+
+        // Começa subida (Provisorio: X segundos)
+        rotina_subida();
 
         // Começa descida (Provisorio: X segundos)
         rotina_descida();
@@ -110,5 +138,5 @@ int main() {
     gpioWrite(ENABLE_PIN, 1);   // Desabilita driver
     gpioTerminate();
 
-    return 0
+    return 0;
 }
