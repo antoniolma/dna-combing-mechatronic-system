@@ -122,7 +122,7 @@ int main() {
     while(1) {
         // Segura esperando o botao
         while (gpioRead(BUTTON_PIN)) {
-            sleep(100*1000);    // 100 ms
+            usleep(100*1000);    // 100 ms
         }
 
         // Procura Fim de Curso
