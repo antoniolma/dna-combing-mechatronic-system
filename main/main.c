@@ -16,9 +16,8 @@
 #define BUTTON_PIN 21    // Botão
 #define STEP_PIN 13
 
-// Frequência desejada para o motor: 12kHz (Driver - 1:16)
-// Iteração 1: Passar frequência para 24kHz (Driver - 1:32)
-#define FREQUENCIA_KHZ 24
+// Frequência desejada para o motor: 21.135kHz (Driver - 1:32)
+#define FREQUENCIA_KHZ 21135
 #define DUTY_CICLE 500000       // 50%
 
 // Endereço I2C do display OLED (SSD1306)
@@ -53,7 +52,7 @@ int gpio_pin_config(){
 // Rotina de Referenciamento (Procurando: Fim de curso)
 int rotina_referenciamento() {
     gpioWrite(DIR_PIN, 0);  // Sobe até encontrar Fim de curso
-    int pwm_exit = gpioHardwarePWM(STEP_PIN, FREQUENCIA_KHZ*1000, DUTY_CICLE);
+    int pwm_exit = gpioHardwarePWM(STEP_PIN, FREQUENCIA_KHZ, DUTY_CICLE);
     if (pwm_exit < 0) {
 	    fprintf(stderr, "  [Motor] Erro no gpioHardwarePWM: exit=%d\n", pwm_exit);
 	    return 1;
@@ -71,7 +70,7 @@ int rotina_referenciamento() {
 // Rotina de Descida (Descendo durante duração)
 int rotina_descida() {
     gpioWrite(DIR_PIN, 1);  // Descendo durante duração
-    int pwm_exit = gpioHardwarePWM(STEP_PIN, FREQUENCIA_KHZ*1000, DUTY_CICLE);
+    int pwm_exit = gpioHardwarePWM(STEP_PIN, FREQUENCIA_KHZ, DUTY_CICLE);
     if (pwm_exit < 0) {
 	    fprintf(stderr, "  [Motor] Erro no gpioHardwarePWM: exit=%d\n", pwm_exit);
 	    return 1;
@@ -90,7 +89,7 @@ int rotina_descida() {
 // Rotina de Subida (Subida durante duração)
 int rotina_subida() {
     gpioWrite(DIR_PIN, 0);  // Subindo durante duração
-    int pwm_exit = gpioHardwarePWM(STEP_PIN, FREQUENCIA_KHZ*1000, DUTY_CICLE);
+    int pwm_exit = gpioHardwarePWM(STEP_PIN, FREQUENCIA_KHZ, DUTY_CICLE);
     if (pwm_exit < 0) {
 	    fprintf(stderr, "  [Motor] Erro no gpioHardwarePWM: exit=%d\n", pwm_exit);
 	    return 1;
