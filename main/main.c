@@ -13,7 +13,6 @@
 #define DIR_PIN 4        // DIRECTION
 #define ENABLE_PIN 22    // ENABLE
 #define CURSO_FINAL_PIN 24  // Final de curso
-#define RELAY_PIN 6      // Relé
 #define BUTTON_PIN 21    // Botão
 #define STEP_PIN 13
 
@@ -37,7 +36,6 @@ int gpio_pin_config(){
     gpioSetMode(STEP_PIN, PI_OUTPUT);
     gpioSetMode(DIR_PIN, PI_OUTPUT);
     gpioSetMode(ENABLE_PIN, PI_OUTPUT);
-    gpioSetMode(RELAY_PIN, PI_OUTPUT);
     gpioSetMode(CURSO_FINAL_PIN, PI_INPUT);
     gpioSetPullUpDown(CURSO_FINAL_PIN, PI_PUD_UP);
     gpioSetMode(BUTTON_PIN, PI_INPUT);
@@ -45,7 +43,6 @@ int gpio_pin_config(){
 
     gpioWrite(DIR_PIN, 0);       // Direção Padrão (subida)
     gpioWrite(ENABLE_PIN, 0);    // Enable no Driver
-    gpioWrite(RELAY_PIN, 1);     // Relé inicialmente desligado
     gpioSetPWMrange(STEP_PIN, 1000);
     return 0;
 }
@@ -62,7 +59,6 @@ int rotina_referenciamento() {
 	    return 1;
     }
 
-    int seconds = 30;
     while (gpioRead(CURSO_FINAL_PIN)) {
         usleep(100*1000);   // 100 ms
     }
@@ -126,13 +122,16 @@ int main() {
         }
 
         // Procura Fim de Curso
-        // rotina_referenciamento();
+        rotina_referenciamento();
 
-        // Começa subida (Provisorio: X segundos)
-        rotina_subida();
-
-        // Começa descida (Provisorio: X segundos)
+        // Começa descida
         rotina_descida();
+
+        // Aguarda X segundos
+        sleep(5);
+
+        // Começa subida
+        rotina_subida();
     }
 
     gpioWrite(ENABLE_PIN, 1);   // Desabilita driver
