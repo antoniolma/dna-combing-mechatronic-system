@@ -12,11 +12,12 @@
 // #define STEP_PIN 27      // STEP
 #define DIR_PIN 4        // DIRECTION
 #define ENABLE_PIN 22    // ENABLE
-#define CURSO_FINAL_PIN 24  // Final de curso
+#define CURSO_FINAL_PIN 16  // Final de curso
 #define BUTTON_PIN 21    // Botão
 #define STEP_PIN 13
 
 // Frequência desejada para o motor: 21.135kHz (Driver - 1:32)
+// Velocidade desejada: 3mm/s
 #define FREQUENCIA_KHZ 21135
 #define DUTY_CICLE 500000       // 50%
 
@@ -63,6 +64,7 @@ int rotina_referenciamento() {
     }
 
     gpioHardwarePWM(STEP_PIN, 0, 0);
+    usleep(100*1000);
 
     return 0;
 }
@@ -76,34 +78,36 @@ int rotina_descida() {
 	    return 1;
     }
     
-    int duration = 30;
+    int duration = 240;
     printf("     Duração: %d segundos.\n", duration);
     sleep(duration);
     
     gpioHardwarePWM(STEP_PIN, 0, 0);
     printf("     Finalizado: Descida.\n");
+    usleep(100*1000);
 
     return 0;
 }
 
 // Rotina de Subida (Subida durante duração)
-int rotina_subida() {
-    gpioWrite(DIR_PIN, 0);  // Subindo durante duração
-    int pwm_exit = gpioHardwarePWM(STEP_PIN, FREQUENCIA_KHZ, DUTY_CICLE);
-    if (pwm_exit < 0) {
-	    fprintf(stderr, "  [Motor] Erro no gpioHardwarePWM: exit=%d\n", pwm_exit);
-	    return 1;
-    }
+// int rotina_subida() {
+//     gpioWrite(DIR_PIN, 0);  // Subindo durante duração
+//     int pwm_exit = gpioHardwarePWM(STEP_PIN, FREQUENCIA_KHZ, DUTY_CICLE);
+//     if (pwm_exit < 0) {
+// 	    fprintf(stderr, "  [Motor] Erro no gpioHardwarePWM: exit=%d\n", pwm_exit);
+// 	    return 1;
+//     }
 
-    int duration = 30;
-    printf("     Duração: %d segundos.\n", duration);
-    sleep(duration);
+//     int duration = 30;
+//     printf("     Duração: %d segundos.\n", duration);
+//     sleep(duration);
     
-    gpioHardwarePWM(STEP_PIN, 0, 0);
-    printf("     Finalizado: Subida.\n");
+//     gpioHardwarePWM(STEP_PIN, 0, 0);
+//     printf("     Finalizado: Subida.\n");
+//     usleep(10*1000);
 
-    return 0;
-}
+//     return 0;
+// }
 
 // ===========================================================
 // Main
@@ -129,8 +133,8 @@ int main() {
         // Aguarda X segundos
         sleep(5);
 
-        // Começa subida
-        rotina_subida();
+        // Começa subida até o final do curso.
+        rotina_referenciamento();
     }
 
     gpioWrite(ENABLE_PIN, 1);   // Desabilita driver
