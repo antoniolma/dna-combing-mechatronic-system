@@ -158,7 +158,7 @@ void teste_OLED(int serial)
     char i = 'i';   // Iniciar
     char p = 'p';   // Parar
 
-    print_section("Inicializando teste: Motor");
+    print_section("Inicializando teste: OLED");
     sleep(1);
     printf("  Aguardando receber input...\n\n");
 
