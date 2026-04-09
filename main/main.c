@@ -64,7 +64,7 @@ int rotina_referenciamento() {
     }
 
     gpioHardwarePWM(STEP_PIN, 0, 0);
-    usleep(100*1000);
+    sleep(1);
 
     return 0;
 }
@@ -84,7 +84,7 @@ int rotina_descida() {
     
     gpioHardwarePWM(STEP_PIN, 0, 0);
     printf("     Finalizado: Descida.\n");
-    usleep(100*1000);
+    sleep(1);
 
     return 0;
 }
